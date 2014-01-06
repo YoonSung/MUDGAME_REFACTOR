@@ -11,11 +11,9 @@
 #include "Printer.h"
 #include "Log.h"
 
-
 #define SWAP( x, y, temp ) { (temp = x); (x = y); (y = temp );}
 #define MOVE_INTERVAL_IN_ROOM	200
 #define MOVE_INTERVAL			2100
-
 
 bool m_IsAIMovementON = false;
 bool m_IsCombatOccur = false;
@@ -45,10 +43,14 @@ CGameManager::~CGameManager(void)
 
 void CGameManager::Init()
 {
+	//console크기 지정.
+	HWND hWnd = GetConsoleWindow();
+	ShowWindow(hWnd, SW_SHOWMAXIMIZED);//SW_MAXIMIZE);
+
 	//게임에 대한 설명부분이 있어야 한다.
 	//난이도, 저장된 목록 불러오기 등이 처리되어야 한다.
 	g_Printer->PrintTextInBox( "[Game Start!!]" );
-	m_MovementWeight = 0.3;
+	m_MovementWeight = 0.3f;
 	CreateMobs(); //플레이어 주변 일정면적이하에는 생성될 수 없도록 처리해야 한다.
 	g_Printer->AutoMapDisplayON();
 	AutoAIMovementON();
@@ -114,17 +116,13 @@ void CGameManager::CreateMobs()
 {
 	g_GameMap->ClearMap();
 
-
-	//플레이어 시작점, 목표지점에는 몹이 생기지 않도록 처리가 필요하다. 
-	//char buf [ 32 ] =  { 0, };
-
-	int mobCount = 5;//( MAP_SIZE * MAP_SIZE ) / 4 ;
+	int mobCount = 5;
 	srand ( ( unsigned ) time ( NULL ) );
 
 	while ( mobCount > 0 )
 	{
-		int x = static_cast<double>(rand()) / (RAND_MAX) * MAP_SIZE;
-		int y = static_cast<double>(rand()) / (RAND_MAX) * MAP_SIZE;
+		int x = static_cast<int>( static_cast<double>(rand()) / (RAND_MAX) * MAP_SIZE );
+		int y = static_cast<int>( static_cast<double>(rand()) / (RAND_MAX) * MAP_SIZE );
 
 		//몬스터 출현지역에 대한 설정. 플레이어 주변 4x4위치에는 몹이 생성되지 않도록 하기 위하여
 		if ( x < ( m_PC->GetPositionX()+3 ) && x > ( m_PC->GetPositionX()-3 ))
@@ -137,16 +135,10 @@ void CGameManager::CreateMobs()
 
 		if ( pMapInfo->pMob == nullptr )
 		{
-			//pMapInfo->pMob = new CMonster();
 			pMapInfo->pMob = new CMonster( x, y );
-			//sprintf_s ( buf, "Mob %d" , mobCount );
-			//pMapInfo->pMob->SetName(buf);
-
 			--mobCount;
 		}
 	}
-
-	//printf_s ( "<< Mob Create Complete! >>\n" );
 }
 
 void CGameManager::AutoAIMovementON()
@@ -164,37 +156,11 @@ void CGameManager::AutoAIMovementOFF()
 	m_IsAIMovementON = false;
 }
 
-// unsigned int WINAPI MonstersAIMove( LPVOID PlayerCharacter )
-// {
-// 	CPlayerCharacter* pc = reinterpret_cast<CPlayerCharacter*>(PlayerCharacter);
-// 	// 	printf("position : x = %d, y = %d", pc->GetPositionX(), pc->GetPositionY());
-// 
-// 	if ( m_IsCombatOccur )
-// 	{
-// 		while ( m_IsCombatOccur )
-// 		{
-// 			_MonsterAIMoveInRoom(pc);
-// 		}
-// 	}
-// 	else
-// 	{
-// 		while ( m_IsAIMovementON )
-// 		{
-// 			_MonsterAIMove(pc);
-// 		} //주기적으로 AIMovement를 시행하는 while 문, movementOn 이라는 flag를 통해서 수행된다.
-// 	}
-// 	
-// 	return 0;
-// }
-
-
 void increaseWeight()
 {
 	m_MovementWeight += 0.05f;
 }
 
-
-//void _MonsterAIMoveInRoom(CPlayerCharacter* pc)
 unsigned int WINAPI MonstersAIMoveInRoom( LPVOID PlayerCharacter )
 {
 
@@ -240,7 +206,7 @@ unsigned int WINAPI MonstersAIMoveInRoom( LPVOID PlayerCharacter )
 			}
 
 			float MovementWeight = 0.9f; //90% 가중치
-			float MovementDeterminant = static_cast<double>(rand()) / (RAND_MAX);
+			float MovementDeterminant = static_cast<float>( static_cast<double>(rand()) / (RAND_MAX) );
 			int MonsterPositionX = monster->GetPosition().x;
 			int MonsterPositionY = monster->GetPosition().y;
 
@@ -381,7 +347,7 @@ unsigned int WINAPI MonstersAIMove( LPVOID PlayerCharacter )
 				continue;
 			}
 			//m_MovementWeight = 0.9f; //90% 가중치
-			float MovementDeterminant = static_cast<double>( rand()) / (RAND_MAX);
+			float MovementDeterminant = static_cast<float>( static_cast<double>( rand()) / (RAND_MAX) );
 
 			if ( m_MovementWeight < MovementDeterminant )
 			{
@@ -431,6 +397,8 @@ unsigned int WINAPI MonstersAIMove( LPVOID PlayerCharacter )
 					mapInfo->pMob = nullptr;
 
 					continue;
+				} else if ( Between_Length_Total == 6 || Between_Length_Total == 7 ) {
+					g_Logger->AddLogBuffer("인근의 좀비가 인기척을 느꼈습니다.");
 				}
 
 				//플레이어가 몬스터보다 오른편에 존재.
@@ -678,10 +646,8 @@ void CGameManager::EndRoomMission()
 		g_Logger->AddLogBuffer("Room안의 좀비를 모두 처치하셨습니다! 전투모드를 종료합니다.");
 	}
 
-	//sychronize player. mock player 객체의 값들을 모두 리턴받는다.
 	g_Printer->CombatModeOFF();
 	m_IsCombatOccur = false;
-
 
 	CPlayerCharacter* mock = g_Room->getPlayer();
 	m_PC->SetLevel( mock->GetLevel() );
@@ -695,11 +661,9 @@ bool CGameManager::EndMission()
 	g_Logger->AddLogBuffer(" ");
 	g_Logger->AddLogBuffer(" ");
 	g_Logger->AddLogBuffer("미션이 종료되었습니다.");
-	Sleep(2000);
-	AutoAIMovementOFF();
 	g_Printer->AutoMapDisPlayOFF();	
-
-	Sleep(2000);
+	Sleep(4000);
+	AutoAIMovementOFF();
 	g_GameMap->ClearMap();
 	g_Room->ClearMap();
 	
@@ -716,7 +680,7 @@ bool CGameManager::EndMission()
 			Init();
 			break;
 		}
-		else
+		else if ( strInput == "exit" || strInput == "EXIT")
 		{
 			return true;
 		}

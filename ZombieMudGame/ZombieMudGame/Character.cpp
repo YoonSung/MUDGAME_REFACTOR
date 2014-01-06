@@ -2,27 +2,20 @@
 #include "Character.h"
 #include "GameMap.h"
 
-//멤버 변수로 위치 만들고
-//위치 출력하는 함수 만들고
-//그리고 각각 키 입력받으면 위치 거시기
-
 CCharacter::CCharacter(void)
 {
-	m_level = 1;
+	m_Level = 1;
 	Init();
-	
 }
 void CCharacter::Init()
 {
-	m_position.x = m_position.y = 0;
-	m_energy = 300 * m_level;
-	m_damage = 1 * m_level;
-	m_experience = 50*m_level;
+	m_Position.x = m_Position.y = 0;
+	m_Energy = 300 * m_Level;
+	m_Damage = 1 * m_Level;
+	m_Experience = 50*m_Level;
 }
 
-CCharacter::~CCharacter(void)
-{
-}
+CCharacter::~CCharacter(void) {}
 
 void CCharacter::SetPosition( int x, int y )
 {
@@ -32,7 +25,7 @@ void CCharacter::SetPosition( int x, int y )
 
 void CCharacter::SetPosition( Position pos )
 {
-	m_position = pos;
+	m_Position = pos;
 }
 
 void CCharacter::Move( DIRECTION dir )
@@ -40,61 +33,59 @@ void CCharacter::Move( DIRECTION dir )
 	switch( dir )
 	{
  	case DIR_UP:
- 		m_position.y = __max( m_position.y - 1, 0 );
+ 		m_Position.y = __max( m_Position.y - 1, 0 );
  		break;
  
  	case DIR_DOWN:
- 		m_position.y = __min( m_position.y + 1, MAP_SIZE - 1 );
+ 		m_Position.y = __min( m_Position.y + 1, MAP_SIZE - 1 );
  		break;
  
  	case DIR_LEFT:
- 		m_position.x = __max( m_position.x - 1, 0 );
+ 		m_Position.x = __max( m_Position.x - 1, 0 );
  		break;
  
  	case DIR_RIGHT:
- 		m_position.x = __min( m_position.x + 1, MAP_SIZE - 1 );
+ 		m_Position.x = __min( m_Position.x + 1, MAP_SIZE - 1 );
  		break;
  	}
-
-	//printf_s( "current pos = ( %d, %d )\n", m_position.x, m_position.y );
 }
 
 int CCharacter::GetEnergy()
 {
-	return m_energy;
+	return m_Energy;
 }
 
 int CCharacter::GetDamage()
 {
-	return m_damage;
+	return m_Damage;
 }
 
 int CCharacter::GetLevel()
 {
-	return m_level;
+	return m_Level;
 }
 
 int CCharacter::GetExperience()
 {
-	return m_experience;
+	return m_Experience;
 }
 
 void CCharacter::SetEnergy( int energy )
 {
-	m_energy = energy;
+	m_Energy = energy;
 }
 
 void CCharacter::SetLevel( int level )
 {
-	m_level = level;
+	m_Level = level;
 }
 
 void CCharacter::SetExperience( int experience )
 {
-	m_experience = experience;
+	m_Experience = experience;
 }
 
 void CCharacter::SetDamage( int damage )
 {
-	m_damage = damage;
+	m_Damage = damage;
 }

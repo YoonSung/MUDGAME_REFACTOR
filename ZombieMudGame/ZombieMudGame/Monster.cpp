@@ -3,10 +3,6 @@
 #include "GameMap.h"
 #include "Room.h"
 
-//why this variable can't be member variable..? why error is occur?
-//1>c:\users\yoonsung\documents\visual studio 2012\projects\cpp\mudgame\sud\monster.h(16): error C2143: 구문 오류 : ';'이(가) '*' 앞에 없습니다.
-//1>c:\users\yoonsung\documents\visual studio 2012\projects\cpp\mudgame\sud\monster.h(16): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
-
 CMonster::CMonster( int startX, int startY )
 {
 	SetPosition (startX, startY);
@@ -14,8 +10,6 @@ CMonster::CMonster( int startX, int startY )
 
 //not allowed to call this function
 CMonster::CMonster(void) {}
-
-
 CMonster::~CMonster(void) {}
 
 void CMonster::_Move ( DIRECTION dir, bool IsCallFromRoom )
@@ -23,16 +17,16 @@ void CMonster::_Move ( DIRECTION dir, bool IsCallFromRoom )
 	MapInfo* mInfo = NULL;
 	
 	if ( IsCallFromRoom )
-		mInfo = g_Room->GetMapInfo( m_position.x, m_position.y );
+		mInfo = g_Room->GetMapInfo( m_Position.x, m_Position.y );
 	else
-		mInfo = g_GameMap->GetMapInfo( m_position.x, m_position.y );
+		mInfo = g_GameMap->GetMapInfo( m_Position.x, m_Position.y );
 	
 	
 	//m_Map->deleteMopInMapInfo( m_position.x, m_position.y );
 	//delete (mInfo->pMob);
 
-	int moveTogo_X = m_position.x;
-	int moveTogo_Y = m_position.y;
+	int moveTogo_X = m_Position.x;
+	int moveTogo_Y = m_Position.y;
 
 
 	switch ( dir )
@@ -82,8 +76,6 @@ void CMonster::_Move ( DIRECTION dir, bool IsCallFromRoom )
 			SetPosition ( moveTogo_X, moveTogo_Y);
 		}
 	}
-	//__super::Move( dir );
-	//printf("position : %d, %d\n",m_position.x, m_position.y);
 }
 
 void CMonster::Move ( DIRECTION dir )

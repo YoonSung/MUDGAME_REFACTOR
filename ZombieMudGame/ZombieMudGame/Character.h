@@ -23,7 +23,7 @@ public:
 	virtual ~CCharacter ( void );
 	virtual void SetPosition ( Position pos );
 	virtual void SetPosition (int x, int y);
-	Position GetPosition(){return m_position;};
+	Position GetPosition(){return m_Position;};
 	virtual void Move ( DIRECTION dir );
 
 	void SetEnergy(int energy);
@@ -36,10 +36,10 @@ public:
 	int GetLevel();
 	int GetExperience();
 protected:
-	Position m_position;
-	int m_damage;
-	int m_energy;
-	int m_level;
-	int m_experience;
+	Position m_Position;
+	int m_Damage;
+	int m_Energy;
+	int m_Level;
+	int m_Experience;
 };
 

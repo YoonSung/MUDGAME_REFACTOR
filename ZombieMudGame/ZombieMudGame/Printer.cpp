@@ -13,20 +13,15 @@
 #define TAP				"\t\t\t" 
 #define PRINT_INTERVAL		100
 #define TIME_BETWEEN_PRINT 1000
-
 #define PLAYER_SPACE_IN_ROOM	"□"
 #define PLAYER_WITH_TARGET		"▣"
 #define TARGET_SPACE_IN_ROOM	"※" 
 #define VACANT_SPACE_IN_ROOM	"  "
 
-
 CPrinter* g_Printer = nullptr;
-
-//print 일반함수에서 다루어야 하기 때문에 일반변수로 선언.
-bool m_Flag = true;
-CPlayerCharacter* m_Printer_PC;
-bool m_isCombatOccur;
-
+bool m_IsAutoMapDisplayON = false;
+CPlayerCharacter* m_Printer_PC = nullptr;
+bool m_IsCombatPrintMode = false;
 
 //내부함수 선언
 void _PrintAllThing();
@@ -41,7 +36,7 @@ std::string getStatusView()
 
 	CPlayerCharacter* target = NULL;
 
-	if ( m_isCombatOccur )
+	if ( m_IsCombatPrintMode )
 	{
 		target = g_Room->getPlayer();
 	}
@@ -88,7 +83,7 @@ std::string getMapView(std::string enemySymbol)
 	}
 	view.append("┓");
 
-	if ( m_isCombatOccur )
+	if ( m_IsCombatPrintMode )
 	{
 		view.append( TAP );
 		view.append("┏");
@@ -127,7 +122,7 @@ std::string getMapView(std::string enemySymbol)
 		}
 		view.append("┃");
 		//만약 전투가 시작되면 오른쪽 맵도 보여준다.
-		if ( m_isCombatOccur )
+		if ( m_IsCombatPrintMode )
 		{
 			view.append( TAP );
 			view.append("┃");
@@ -163,7 +158,7 @@ std::string getMapView(std::string enemySymbol)
 	}
 	view.append("┛");
 
-	if ( m_isCombatOccur )
+	if ( m_IsCombatPrintMode )
 	{
 		view.append( TAP );
 		view.append("┗");
@@ -181,12 +176,12 @@ std::string getMapView(std::string enemySymbol)
 
 void CPrinter::CombatModeON()
 {
-	m_isCombatOccur = true;
+	m_IsCombatPrintMode = true;
 }
 
 void CPrinter::CombatModeOFF()
 {
-	m_isCombatOccur = false;
+	m_IsCombatPrintMode = false;
 }
 
 void CPrinter::PrintExceptEnemy()
@@ -224,11 +219,11 @@ void _Print(std::string enemySymbol)
 unsigned int WINAPI ThreadProc( LPVOID lpParam )
 {
 
-	while ( m_Flag )
+	while ( m_IsAutoMapDisplayON )
 	{
 		Sleep(PRINT_INTERVAL);
 
-		if ( !m_isCombatOccur )
+		if ( !m_IsCombatPrintMode )
 		{
 			_PrintExceptEnemy();
 			Sleep(TIME_BETWEEN_PRINT);
@@ -240,7 +235,7 @@ unsigned int WINAPI ThreadProc( LPVOID lpParam )
 
 void CPrinter::AutoMapDisplayON()
 {
-	m_Flag = true;
+	m_IsAutoMapDisplayON = true;
 
 	DWORD dwThreadId;
 	HANDLE hThread;
@@ -251,7 +246,7 @@ void CPrinter::AutoMapDisplayON()
 
 void CPrinter::AutoMapDisPlayOFF()
 {
-	m_Flag = false;
+	m_IsAutoMapDisplayON = false;
 	system ( CLEAR_MONITOR );
 }
 
@@ -272,13 +267,10 @@ void CPrinter::init()
 	g_Logger->AddLogBuffer("부디.... 잘 살아남으시기 바랍니다.");
 }
 
-CPrinter::~CPrinter(void)
-{
-}
+CPrinter::~CPrinter(void) {}
 
 void CPrinter::PrintTextInBox( std::string value )
 {
-
 	std::string view;
 
 	view.append("┏");

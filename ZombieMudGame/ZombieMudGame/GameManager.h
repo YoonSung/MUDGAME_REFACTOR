@@ -1,9 +1,6 @@
 #pragma once
 
-// #include "GameMap.h"
 #include "PlayerCharacter.h"
-// #include "Printer.h"
-// #include "Room.h"
 #define DIR_ARRAY_MAXNUM 20
 
 class CGameManager

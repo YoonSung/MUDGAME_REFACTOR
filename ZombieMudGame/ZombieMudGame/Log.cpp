@@ -58,6 +58,4 @@ std::string CLog::getLogView()
 }
 
 
-CLog::~CLog(void)
-{
-}
+CLog::~CLog(void) {}

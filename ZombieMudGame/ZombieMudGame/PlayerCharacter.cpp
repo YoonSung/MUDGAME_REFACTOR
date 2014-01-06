@@ -17,75 +17,75 @@ CPlayerCharacter::~CPlayerCharacter(void)
 
 int CPlayerCharacter::GetPositionX()
 {
-	return m_position.x;
+	return m_Position.x;
 }
 
 int CPlayerCharacter::GetPositionY()
 {
-	return m_position.y;
+	return m_Position.y;
 }
 
 void CPlayerCharacter::LevelUpgrade()
 {
-	m_level++;
+	m_Level++;
 	RefreshSkillNumber();
 }
 
 void CPlayerCharacter::RefreshSkillNumber()
 {
-	if ( m_level <= 5)
+	if ( m_Level <= 5)
 	{
 		skill_1_num = 1;
 	}
 	else
 	{
-		skill_1_num = (int)(m_level/3);
+		skill_1_num = (int)(m_Level/3);
 	}
 
 
-	if ( 2 <= m_level && m_level <= 5 )
+	if ( 2 <= m_Level && m_Level <= 5 )
 	{
 		skill_2_num = 2;
 	} 
-	else if ( m_level > 5 )
+	else if ( m_Level > 5 )
 	{
-		skill_2_num = (int)(m_level/5);
+		skill_2_num = (int)(m_Level/5);
 	}
 
 
-	if ( 5<= m_level && m_level <= 7)
+	if ( 5<= m_Level && m_Level <= 7)
 	{
 		skill_3_num = 1;
 	}
-	else if ( m_level > 8 )
+	else if ( m_Level > 8 )
 	{
-		skill_3_num = (int)(m_level/10);
+		skill_3_num = (int)(m_Level/10);
 	}
 }
 
 void CPlayerCharacter::CheckUpdate()
 {
-	if ( m_experience >= 100 )
+	if ( m_Experience >= 100 )
 	{
 		LevelUpgrade();
-		m_experience = 0;
+		m_Experience = 0;
 	}
 }
 
 void CPlayerCharacter::KillingZombie( int experience )
 {
-	m_experience += experience;
+	m_Experience += experience;
 	m_Total_Killing_num++;
 }
 
 void CPlayerCharacter::AttackFromEnemy( int damage )
 {
-	m_energy -= damage;
+	m_Energy -= damage;
 }
 
 bool CPlayerCharacter::IsPlayerDead()
 {
-	return ( 0 >= m_energy );
+	return ( 0 >= m_Energy );
 }
 
 int CPlayerCharacter::GetTotalKillingNum()
